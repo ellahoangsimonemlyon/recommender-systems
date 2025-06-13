@@ -1,0 +1,15 @@
+name: recommender_system_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandas
+  - pip
+  - black
+  - isort
+  - flake8
+  - mypy
+  - pytest
+  - pip:
+      - kaggle
