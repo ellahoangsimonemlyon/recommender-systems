@@ -4,7 +4,7 @@ import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
  
 # Set Kaggle environment variable (optional if kaggle.json is in ~/.kaggle)
-os.environ["KAGGLE_CONFIG_DIR"] = os.path.expanduser("~/.kaggle")
+os.environ["KAGGLE_CONFIG_DIR"] = os.path.expanduser("~/Desktop")
  
 # Initialize and authenticate API
 api = KaggleApi()
