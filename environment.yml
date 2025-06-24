@@ -1,15 +1,26 @@
 name: recommender_system_env
 channels:
-  - defaults
   - conda-forge
+  - defaults
 dependencies:
   - python=3.10
   - pandas
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - nltk
   - pip
   - black
   - isort
   - flake8
   - mypy
   - pytest
+  - tqdm
+  - streamlit
+  - python-annoy
   - pip:
+      - implicit
       - kaggle
+      - nltk

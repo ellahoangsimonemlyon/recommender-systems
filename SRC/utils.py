@@ -4,10 +4,8 @@ import pandas as pd
 
 ##### Cleaning data functions #####
 
-def clean_data(df, threshold, do_imputation = False):
+def clean_data(df, columns_to_drop, do_imputation = False):
     # Remove columns with many missing values
-    missing_ratio = df.isnull().mean()
-    columns_to_drop = missing_ratio[missing_ratio > threshold].index.tolist()  # threshold to be decided based on the dataset and the column
     final_df = df.drop(columns = columns_to_drop)
 
     # If imputation is enabled, apply value-based imputation on category columns
