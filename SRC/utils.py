@@ -45,11 +45,16 @@ def value_impute(df, col, target_col):
     return df
 
 
+
+##### Sephora Recommendation Class #####
+"""
+Class containing all the functions related to the recommendation system
+"""
+
 class SephoraRecommendationSystem:
     def __init__(self, reviews_df, products_df):
         """
         Initialize the recommendation system with reviews and products data
-        
         Args:
             reviews_df: DataFrame with review data
             products_df: DataFrame with product information
@@ -87,17 +92,15 @@ class SephoraRecommendationSystem:
         self.tfidf_ingredients = TfidfVectorizer(max_features=500, stop_words='english')
         self.tfidf_highlights = TfidfVectorizer(max_features=300, stop_words='english')
         
-        # Clean and prepare data
+        # Clean and prepare data -- raise an error if it doesn't work 
         success = self._prepare_data()
         if not success:
-            raise ValueError("Failed to prepare data. Please check your input DataFrames.")
+            raise ValueError("Failed to prepare data. Check your input DataFrames.")
         
     def _prepare_data(self):
         """Clean and prepare the data for modeling"""
         try:
-            print("Preparing data...")
-            
-            # Check if required columns exist
+            # Check if the required columns exist -- raise an error if they don't exist in the dataset
             required_review_cols = ['author_id', 'product_id', 'rating']
             required_product_cols = ['product_id']
             
@@ -121,7 +124,7 @@ class SephoraRecommendationSystem:
             
             # Create content-based features
             self._create_content_features()
-            
+
             # Create user profiles for cold start
             self._create_user_profiles()
             
