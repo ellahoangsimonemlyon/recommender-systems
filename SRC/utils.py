@@ -210,7 +210,7 @@ class SephoraRecommendationSystem:
             # print(f"User-Item Matrix Shape: {self.user_item_matrix.shape}")
             # print(f"Sparsity: {(1 - self.user_item_matrix.nnz / (self.user_item_matrix.shape[0] * self.user_item_matrix.shape[1])) * 100:.2f}%")
 
-            if self.user_item_matrix.nnz == 0:
+            if self.user_item_matrix.nnz == 0:  # check for non zero elements 
                 print("ERROR: User-item matrix has no interactions")
                 return False
 
@@ -218,7 +218,7 @@ class SephoraRecommendationSystem:
 
         except Exception as e:
             print(f"ERROR in _create_user_item_matrix: {e}")
-            import traceback
+            import traceback   # show line with error
 
             traceback.print_exc()
             return False
