@@ -14,7 +14,7 @@ An AI-powered beauty product recommendation system that provides personalized su
 - **Interactive Web App**: User-friendly Streamlit interface
 - **Comprehensive Evaluation**: Built-in metrics for coverage, diversity, and bias analysis
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 sephora-recommendation/
@@ -51,31 +51,32 @@ sephora-recommendation/
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd sephora-recommendation
+cd recommender-system
 
 # Create conda environment
 conda env create -f environment.yml
-conda activate sephora-recommendation
+conda activate recommender-system-env
 ```
 
 ### 2. Data Preparation
 
-Place your data files in the `data/` directory:
-- `reviews_df.csv`: User review data with columns: `author_id`, `product_id`, `rating`, `skin_tone`, `skin_type`, `eye_color`, `hair_color`
-- `product_info_df.csv`: Product information with columns: `product_id`, `product_name`, `brand_name`, `price_usd`, `primary_category`, `secondary_category`, `tertiary_category`, `ingredients`, `highlights`
+```bash
+python SRC/load_data.py
+```
+
+Run the file `load_data.py` inside the `SRC` folder. A new folder `data` will be created containing:
+- `reviews_0-250.csv`, `reviews_250-500.csv`, `reviews_500-750.csv`, `reviews_750-1250.csv`, `reviews_0125-end.csv`: User review data with columns: `author_id`, `rating`, `is_recommended`, `helpfulness`, `total_feedback_count`, `total_neg_feedback_count`, `total_pos_feedback_count`, `submission_time`, `review_text`, `skin_tone`, `eye_color`, `skin_type`, `hair_color`, `product_id`, `product_name`, `brand_name`, `price_usd`
+- `product_info.csv`: Product information with columns: `product_id`, `product_name`, `brand_id`,`brand_name`, `loves_count`, `rating`, `reviews`, `size`, `variation_type`, `variation_value`, `variation_desc`, `ingredients`, `price_usd`,`value_price_usd`, `sale_price_usd`, `limited_edition`, `new`, `online_only`, `out_of_stock`, `sephora_exclusive`, `highlights`,`primary_category`, `secondary_category`, `tertiary_category`, `child_count`, `child_max_price`, `child_min_price`
+
 
 ### 3. Data Preprocessing (Optional)
 
-```bash
-cd src
-python preprocessing.py
-```
+Run the jupyter notebook file `data_cleaning.ipynb`
 
 ### 4. Train Models
 
 ```bash
-cd src
-python training.py
+python SRC/training.py
 ```
 
 This will:
@@ -86,14 +87,13 @@ This will:
 ### 5. Evaluate Models
 
 ```bash
-cd src
-python evaluation.py
+python SRC/evaluation.py
 ```
-
 This generates a comprehensive evaluation report including:
 - Coverage metrics (catalog and user coverage)
 - Diversity analysis (category, brand, price diversity)
 - Popularity bias detection
+- RMSE, MAP@10, NDCG@10 and Precision@10
 - Cold start performance assessment
 - HTML report saved to `models/evaluation_report.html`
 
@@ -106,7 +106,7 @@ streamlit run app.py
 
 The web app will be available at `http://localhost:8501`
 
-## 💡 How It Works
+## How It Works
 
 ### Recommendation Strategies
 
@@ -122,46 +122,39 @@ The web app will be available at `http://localhost:8501`
 
 3. **Category Filtering**:
    - Supports filtering by primary, secondary, and tertiary categories
-   - Intelligent fallback system when no products match specific categories
+   - Fallback system when no products match specific categories
    - Finds similar categories or relaxes filters progressively
 
-### Data Schema
+### Model Architecture
+Training System (`SephoraRecommendationSystem`):
 
-**Reviews Data** (`reviews_df.csv`):
-```
-author_id       : Unique user identifier
-product_id      : Unique product identifier  
-rating          : Rating score (1-5)
-skin_tone       : User's skin tone (light, medium, dark, etc.)
-skin_type       : User's skin type (dry, oily, combination, etc.)
-eye_color       : User's eye color
-hair_color      : User's hair color
-```
+Processes raw data and trains models
+Saves trained models separately by type
+Used once during development
 
-**Products Data** (`product_info_df.csv`):
-```
-product_id         : Unique product identifier
-product_name       : Product name
-brand_name         : Brand name
-price_usd          : Price in USD
-rating             : Average product rating
-primary_category   : Main category (Makeup, Skincare, etc.)
-secondary_category : Subcategory
-tertiary_category  : Specific product type
-ingredients        : Product ingredients text
-highlights         : Product highlights/features text
-```
+Inference System (`SephoraInferenceSystem`): 
 
-## 📊 Key Findings from EDA
+Loads pre-trained models for fast predictions
+Handles real-time recommendation requests
+Used by web app and evaluation
 
-- **Dataset Size**: ~X users, ~Y products, ~Z interactions
-- **Sparsity**: The user-item matrix is highly sparse (~95%+)
-- **Popular Categories**: Makeup and Skincare dominate the catalog
-- **Rating Distribution**: Most ratings are positive (4-5 stars)
-- **Price Range**: Products range from budget-friendly to luxury
-- **User Profiles**: Diverse user characteristics enable effective cold start
+## Key Findings from EDA
 
-## 🎮 Web App Features
+Machine Learning Metrics:
+
+- **MAP@10: 0.77** - Excellent ranking quality (research-paper level)
+- **Precision@10: 0.81** - Very high precision
+- **NDCG@10: 0.81** - Excellent normalized ranking
+- **RMSE: 3.52** - Rating prediction accuracy (area for improvement)
+
+System Metrics:
+
+- **User Coverage: 100%** - All users receive recommendations
+- **Cold Start Success: 100%** - Perfect new user handling
+- **Brand Diversity: 0.69** - Good variety of brands
+- **Catalog Coverage: 3.4%**- Conservative recommendation strategy
+
+## Web App Features
 
 ### User Interface
 - **User Selection**: Choose between existing user ID or new user profile
@@ -179,7 +172,7 @@ highlights         : Product highlights/features text
 - **CSV Download**: Export recommendations for external use
 - **Shareable Results**: Easy to share recommendation lists
 
-## 🔧 Model Architecture
+## Model Configuration
 
 ### Collaborative Filtering (ALS)
 ```python
@@ -202,7 +195,7 @@ AlternatingLeastSquares(
 - Uses content-based as fallback and diversity enhancer
 - Intelligent blending based on user history and preferences
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### Coverage
 - **Catalog Coverage**: Percentage of products that get recommended
@@ -218,7 +211,7 @@ AlternatingLeastSquares(
 - **Cold Start Success**: Ability to recommend to new users
 - **Rating Prediction**: Accuracy of predicted preferences
 
-## 🛠️ Technical Implementation
+## Technical Implementation
 
 ### Dependencies
 - **pandas/numpy**: Data manipulation and numerical computing
@@ -232,74 +225,14 @@ AlternatingLeastSquares(
   - `collaborative_filtering/`: ALS model artifacts
   - `content_based/`: TF-IDF vectors and similarity matrices
   - `mappings/`: User/product mappings and interaction matrices
-  - `processed_data/`: Cleaned and preprocessed datasets
 
-### Scalability Considerations
-- **Sparse Matrix Storage**: Efficient memory usage for large datasets
-- **Incremental Training**: Models can be retrained with new data
-- **Batch Inference**: Support for bulk recommendation generation
-- **Caching**: Model loading cached for web app performance
 
-## 🚨 Troubleshooting
-
-### Common Issues
-
-1. **Import Errors**:
-   ```bash
-   # Make sure you're in the right directory and environment is activated
-   conda activate sephora-recommendation
-   cd src  # for running training/evaluation scripts
-   cd app  # for running web app
-   ```
-
-2. **Missing Models**:
-   ```bash
-   # Train models first
-   cd src
-   python training.py
-   ```
-
-3. **Data Issues**:
-   ```bash
-   # Check data format and run preprocessing
-   cd src
-   python preprocessing.py
-   ```
-
-4. **Memory Issues**:
-   - Reduce matrix dimensions in `utils.py`
-   - Use smaller sample for evaluation
-   - Increase system memory or use cloud instance
-
-### Performance Optimization
-
-- **For Large Datasets**: Consider using approximate algorithms
-- **For Real-time Serving**: Implement model serving with FastAPI
-- **For Scale**: Consider distributed computing with Dask/Spark
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Sephora for inspiration and beauty product domain knowledge
 - Implicit library authors for collaborative filtering implementation
-- Streamlit team for the excellent web framework
+- Streamlit team for the web framework
 - Open source community for the amazing tools and libraries
 
-## 📞 Contact
-
-For questions, issues, or collaboration opportunities, please open an issue or contact the development team.
 
 ---
-
-**Built with ❤️ for beauty enthusiasts and data science practitioners**
