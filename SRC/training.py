@@ -38,10 +38,10 @@ def load_data():
     """Load training data"""
     try:
         reviews_df = pd.read_csv(
-            "data/reviews_df.csv",
+            "../data/reviews_df.csv",
             dtype={"author_id": "str"}
         )
-        products_df = pd.read_csv("data/product_info_df.csv")
+        products_df = pd.read_csv("../data/product_info_df.csv")
         return reviews_df, products_df
     except Exception as e:
         print(f"Error loading data: {e}")
