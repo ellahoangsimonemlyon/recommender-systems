@@ -1,0 +1,108 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Sephora Recommendation System - Evaluation Report</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                h1 { color: #333; }
+                h2 { color: #666; border-bottom: 2px solid #ddd; }
+                .metric { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 5px; }
+                .good { background: #d4edda; border: 1px solid #c3e6cb; }
+                .warning { background: #fff3cd; border: 1px solid #ffeaa7; }
+                .poor { background: #f8d7da; border: 1px solid #f5c6cb; }
+                table { border-collapse: collapse; width: 100%; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .ml-metrics { background: #e3f2fd; border: 1px solid #2196f3; }
+            </style>
+        </head>
+        <body>
+            <h1>📊 Sephora Recommendation System - Evaluation Report</h1>
+            
+            <h2>🤖 Machine Learning Performance Metrics</h2>
+            <div class="metric ml-metrics poor">
+                <strong>RMSE (Rating Prediction):</strong> 3.5223<br>
+                <strong>MAE (Mean Absolute Error):</strong> 3.2261<br>
+                <strong>Correlation:</strong> 0.3837<br>
+                <small>Evaluated on 838 predictions from 500 users</small>
+            </div>
+            <div class="metric ml-metrics good">
+                <strong>MAP@10 (Mean Average Precision):</strong> 0.7748<br>
+                <strong>Precision@10:</strong> 0.8082<br>
+                <strong>NDCG@10:</strong> 0.8137<br>
+                <small>Evaluated on 200 users with test data</small>
+            </div>
+            <h2>🎯 Coverage Metrics</h2>
+            <div class="metric warning">
+                <strong>Catalog Coverage:</strong> 3.36%<br>
+                <small>Products recommended: 189 / 5,621</small>
+            </div>
+            <div class="metric good">
+                <strong>User Coverage:</strong> 100.00%<br>
+                <small>Successful users: 100 / 100</small>
+            </div>
+            
+            <h2>🌈 Diversity Metrics</h2>
+            <div class="metric warning">
+                <strong>Category Diversity:</strong> 0.114<br>
+                <small>Average proportion of unique categories per user</small>
+            </div>
+            <div class="metric good">
+                <strong>Brand Diversity:</strong> 0.694<br>
+                <small>Average proportion of unique brands per user</small>
+            </div>
+            <div class="metric">
+                <strong>Price Diversity:</strong> 0.666<br>
+                <small>Coefficient of variation in prices</small>
+            </div>
+            
+            <h2>⭐ Popularity Bias</h2>
+            <div class="metric warning">
+                <strong>Popularity Bias Score:</strong> 0.917<br>
+                <small>0 = no bias, 1 = maximum bias</small>
+            </div>
+            <div class="metric">
+                <strong>Average Popularity Rank:</strong> 195.6<br>
+                <small>Lower rank = more popular products</small>
+            </div>
+            
+            <h2>🆕 Cold Start Performance</h2>
+            <div class="metric good">
+                <strong>Success Rate:</strong> 100.00%<br>
+                <small>Percentage of new user profiles that received recommendations</small>
+            </div>
+            <div class="metric">
+                <strong>Average Recommendations:</strong> 7.0<br>
+                <small>Average number of recommendations per new user</small>
+            </div>
+            
+            <h2>📈 Category Distribution</h2>
+            <p>Top categories in recommendations:</p>
+            <table>
+                <tr><th>Category</th><th>Recommendation %</th><th>Catalog %</th><th>Difference</th></tr>
+                <tr>
+                    <td>Skincare</td>
+                    <td>100.0%</td>
+                    <td>33.2%</td>
+                    <td style="color: red">+66.8%</td>
+                </tr>
+            </table>
+            
+            <h2>💡 Performance Analysis & Recommendations</h2>
+            <ul><li>⚠️ High RMSE - consider tuning model hyperparameters or adding more features</li><li>✅ Good MAP@10 performance - model ranks relevant items well</li><li>⚠️ Low catalog coverage - consider improving recommendation diversity</li><li>⚠️ Low category diversity - recommendations may be too narrow</li><li>⚠️ High popularity bias - system may be recommending only popular items</li>
+                <li>✅ System successfully provides recommendations for most users</li>
+                <li>✅ Multiple recommendation strategies (collaborative + content-based) working</li>
+            </ul>
+            
+            <h2>🔧 Technical Details</h2>
+            <p><strong>Evaluation Method:</strong> Train/test split evaluation using collaborative filtering metrics</p>
+            <p><strong>RMSE:</strong> Root Mean Square Error on held-out ratings</p>
+            <p><strong>MAP@10:</strong> Mean Average Precision at 10 recommendations</p>
+            <p><strong>Coverage:</strong> Catalog and user coverage analysis</p>
+            <p><strong>Diversity:</strong> Category, brand, and price diversity metrics</p>
+            <p><strong>Sample Size:</strong> 50-500 users depending on metric</p>
+            
+        </body>
+        </html>
+        

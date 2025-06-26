@@ -1,10 +1,10 @@
 """
 Sephora Recommendation System - Streamlit Web App
-===============================================
-
+-----------------------------------------------------
 Interactive web interface for the Sephora recommendation system.
 """
 
+# Imports
 import streamlit as st
 import pandas as pd
 import sys
@@ -19,6 +19,8 @@ warnings.filterwarnings('ignore')
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'SRC'))
 
+
+# Import inference -- try to import it and raise an error if fails (display on streamlit (sr) a message)
 try:
     from inference import SephoraInferenceSystem
 except ImportError as e:
@@ -35,7 +37,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS styles for HTML -- code created with the help of Claude.ai
 st.markdown("""
 <style>
     .main-header {
@@ -70,7 +72,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-@st.cache_resource
+@st.cache_resource          # only loads the code once per session
 def load_inference_system():
     """Load the inference system (cached)"""
     try:
@@ -78,20 +80,20 @@ def load_inference_system():
         try:
             import implicit
         except ImportError:
-            st.error("❌ Missing required library: 'implicit'")
-            st.error("Please install it by running: pip install implicit")
+            st.error("Missing required library: 'implicit'")
+            st.error("Please install it by running: conda install -c conda-forge implicit")
             st.stop()
         
         return SephoraInferenceSystem()
     except FileNotFoundError as e:
-        st.error(f"❌ Model files not found: {e}")
+        st.error(f"Model files not found: {e}")
         st.error("Please ensure models are trained by running: python src/training.py")
-        st.info("💡 Or check that you're running the app from the correct directory")
+        st.info("Or check that you're running the app from the correct directory")
         return None
     except Exception as e:
-        st.error(f"❌ Error loading models: {e}")
+        st.error(f"Error loading models: {e}")
         st.error("Please ensure models are trained by running: python src/training.py")
-        st.info("💡 Check the console for more detailed error information")
+        st.info("Check the console for more detailed error information")
         return None
 
 def display_recommendation_card(rec, index):
@@ -173,20 +175,6 @@ def main():
     
     # Sidebar for system info
     with st.sidebar:
-        st.header("📊 System Information")
-        stats = inference_system.get_user_stats()
-        
-        st.markdown(f"""
-        <div class="metric-card">
-            <h4>Model Statistics</h4>
-            <p><strong>Total Users:</strong> {stats.get('total_users', 'N/A'):,}</p>
-            <p><strong>Total Products:</strong> {stats.get('total_products', 'N/A'):,}</p>
-            <p><strong>Total Interactions:</strong> {stats.get('total_interactions', 'N/A'):,}</p>
-            <p><strong>Model Timestamp:</strong> {stats.get('model_timestamp', 'Unknown')}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("---")
         st.markdown("**How it works:**")
         st.markdown("• **Existing users**: Get personalized recommendations using collaborative filtering and content-based methods")
         st.markdown("• **New users**: Get recommendations based on similar user profiles and popular products")
@@ -201,7 +189,7 @@ def main():
         # User selection method
         user_method = st.radio(
             "How would you like to get recommendations?",
-            ["I'm an existing user", "I'm a new user", "Just show me popular products"],
+            ["I'm an existing user", "I'm a new user", "Popular products"],
             help="Choose based on whether you have an account or not"
         )
         
