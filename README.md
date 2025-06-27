@@ -21,9 +21,9 @@ sephora-recommendation/
 ├── app/                    # Streamlit web application
 │   └── app.py             # Main Streamlit app
 ├── data/                   # Data files and EDA
-│   ├── reviews_df.csv     # Cleaned user reviews data
+│   ├── product_info.csv    # Product catalog data
 │   ├── product_info_df.csv # Cleaned product catalog data
-|   ├── product_info.csv    # Product catalog data
+|   ├── reviews_df.csv     # Cleaned user reviews data
 │   └── reviews_0_250.csv   # User reviews data
 ├── models/                # Trained model artifacts (generated)
 │   ├── collaborative_filtering/
