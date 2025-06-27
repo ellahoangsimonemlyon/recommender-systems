@@ -24,17 +24,17 @@ sephora-recommendation/
 │   ├── reviews_df.csv     # Cleaned user reviews data
 │   ├── product_info_df.csv # Cleaned product catalog data
 |   ├── product_info.csv    # Product catalog data
-|   ├── reviews_0_250.csv   # User reviews data
-│   └── EDA.ipynb         # Exploratory Data Analysis notebook
+│   └── reviews_0_250.csv   # User reviews data
 ├── models/                # Trained model artifacts (generated)
 │   ├── collaborative_filtering/
 │   ├── content_based/
 │   ├── mappings/
 │   └── latest_models.pkl
 ├── src/                   # Core Python modules
+|   ├── EDA.ipynb         # Exploratory Data Analysis notebook
 │   ├── utils.py          # SephoraRecommendationSystem class and cleaning functions
 │   ├── load_data.py      # Data loading pipeline
-|   ├── data_cleaning     # Cleaning data pipeline
+|   ├── data_cleaning.py  # Cleaning data pipeline
 │   ├── training.py       # Model training pipeline
 |   ├── recommendations.ipynb    # Recommendation tests
 │   ├── inference.py      # Model inference system
@@ -61,22 +61,38 @@ conda activate recommender-system-env
 ### 2. Data Preparation
 
 ```bash
-python SRC/load_data.py
+cd src
+python load_data.py
 ```
 
-Run the file `load_data.py` inside the `SRC` folder. A new folder `data` will be created containing:
+Run the file `load_data.py` inside the `SRC` folder to download the data. A new folder `data` will be created containing:
 - `reviews_0-250.csv`, `reviews_250-500.csv`, `reviews_500-750.csv`, `reviews_750-1250.csv`, `reviews_0125-end.csv`: User review data with columns: `author_id`, `rating`, `is_recommended`, `helpfulness`, `total_feedback_count`, `total_neg_feedback_count`, `total_pos_feedback_count`, `submission_time`, `review_text`, `skin_tone`, `eye_color`, `skin_type`, `hair_color`, `product_id`, `product_name`, `brand_name`, `price_usd`
 - `product_info.csv`: Product information with columns: `product_id`, `product_name`, `brand_id`,`brand_name`, `loves_count`, `rating`, `reviews`, `size`, `variation_type`, `variation_value`, `variation_desc`, `ingredients`, `price_usd`,`value_price_usd`, `sale_price_usd`, `limited_edition`, `new`, `online_only`, `out_of_stock`, `sephora_exclusive`, `highlights`,`primary_category`, `secondary_category`, `tertiary_category`, `child_count`, `child_max_price`, `child_min_price`
 
 
-### 3. Data Preprocessing (Optional)
+### 3. Data Preprocessing
 
-Run the jupyter notebook file `data_cleaning.ipynb`
+```bash
+cd src
+python data_cleaning.py
+```
+
+This script cleans and processes raw data by:
+
+- Product Info: Removes columns with excessive nulls, converts data types, imputes category hierarchies, removes duplicates.
+- Reviews: Merges CSVs, drops unnecessary columns, standardizes text (e.g. skin tone, brand), handles author IDs, removes duplicates.
+- Smart Imputation: Hierarchical category imputation using most frequent values within groups.
+- Data QA: Validates types, removes duplicates, checks consistency, and analyzes missing values.
+
+Output files:
+- data/product_info_df.csv – cleaned product data
+- data/reviews_df.csv – cleaned and merged reviews data
 
 ### 4. Train Models
 
 ```bash
-python SRC/training.py
+cd src
+python training.py
 ```
 
 This will:
@@ -87,8 +103,11 @@ This will:
 ### 5. Evaluate Models
 
 ```bash
-python SRC/evaluation.py
+cd src
+python inference.py
+python evaluation.py
 ```
+
 This generates a comprehensive evaluation report including:
 - Coverage metrics (catalog and user coverage)
 - Diversity analysis (category, brand, price diversity)
@@ -101,7 +120,7 @@ This generates a comprehensive evaluation report including:
 
 ```bash
 cd app
-streamlit run app.py
+streamlit python -m streamlit run app.py
 ```
 
 The web app will be available at `http://localhost:8501`
