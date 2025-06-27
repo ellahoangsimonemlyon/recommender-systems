@@ -16,6 +16,7 @@ dependencies:
   - black
   - isort
   - flake8
+  - pylint
   - mypy
   - pytest
   - tqdm

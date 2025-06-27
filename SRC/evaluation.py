@@ -4,19 +4,12 @@ Evaluation Script
 
 This script evaluates the performance of the recommendation system.
 """
-
 import os
-import pickle
 import sys
 import warnings
 from pathlib import Path
-
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
 import tqdm
-from scipy.sparse import csr_matrix
 from scipy.stats import pearsonr
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
@@ -849,8 +842,7 @@ class RecommendationEvaluator:
             <p><strong>MAP@10:</strong> Mean Average Precision at 10 recommendations</p>
             <p><strong>Coverage:</strong> Catalog and user coverage analysis</p>
             <p><strong>Diversity:</strong> Category, brand, and price diversity metrics</p>
-            <p><strong>Sample Size:</strong> 50-500 users depending on metric</p>
-            
+            <p><strong>Sample Size:</strong> 50-500 users depending on metric</p> 
         </body>
         </html>
         """
@@ -872,9 +864,9 @@ class RecommendationEvaluator:
         print("MACHINE LEARNING METRICS:")
         if "rmse" in self.results and self.results["rmse"].get("rmse") is not None:
             rmse_data = self.results["rmse"]
-            print(f"  • RMSE: {rmse_data['rmse']:.4f}")
-            print(f"  • MAE: {rmse_data['mae']:.4f}")
-            print(f"  • Correlation: {rmse_data.get('correlation', 'N/A'):.4f}")
+            print(f"• RMSE: {rmse_data['rmse']:.4f}")
+            print(f"• MAE: {rmse_data['mae']:.4f}")
+            print(f"• Correlation: {rmse_data.get('correlation', 'N/A'):.4f}")
 
             # RMSE interpretation
             if rmse_data["rmse"] < 1.0:
@@ -901,7 +893,7 @@ class RecommendationEvaluator:
             elif map_data["map"] > 0.05:
                 print("Moderate ranking performance")
             else:
-                print("Poor ranking performance - improve recommendation quality")
+                print("Poor ranking performance")
         else:
             print("  • MAP@10: Not available (no test data)")
 
@@ -909,30 +901,38 @@ class RecommendationEvaluator:
         print("\nSYSTEM METRICS:")
         if "coverage" in self.results:
             print(
-                f"  • Catalog Coverage: {self.results['coverage']['catalog_coverage']:.2%}"
+                f"• Catalog Coverage: "
+                f"{self.results['coverage']['catalog_coverage']:.2%}"
             )
-            print(f"  • User Coverage: {self.results['coverage']['user_coverage']:.2%}")
+            print(
+                    f"• User Coverage: "
+                    f"{self.results['coverage']['user_coverage']:.2%}"
+            )
 
         if "diversity" in self.results:
             print(
-                f"  • Category Diversity: {self.results['diversity']['category_diversity']:.3f}"
+                f"• Category Diversity: "
+                f"{self.results['diversity']['category_diversity']:.3f}"
             )
             print(
-                f"  • Brand Diversity: {self.results['diversity']['brand_diversity']:.3f}"
+                f"• Brand Diversity: "
+                f"{self.results['diversity']['brand_diversity']:.3f}"
             )
 
         if "popularity_bias" in self.results:
             print(
-                f"  • Popularity Bias: {self.results['popularity_bias']['bias_score']:.3f}"
+                f"• Popularity Bias: "
+                f"{self.results['popularity_bias']['bias_score']:.3f}"
             )
 
         if "cold_start" in self.results:
             print(
-                f"  • Cold Start Success: {self.results['cold_start']['success_rate']:.2%}"
+                f"• Cold Start Success: "
+                f"{self.results['cold_start']['success_rate']:.2%}"
             )
 
         # Overall assessment
-        print(f"\nOVERALL ASSESSMENT:")
+        print("\nOVERALL ASSESSMENT:")
 
         excellent_metrics = []
         good_metrics = []
@@ -963,14 +963,23 @@ class RecommendationEvaluator:
         else:
             issues.append("Low user coverage")
 
-        if self.results.get("diversity", {}).get("category_diversity", 0) > 0.3:
+        if (
+            self.results.get("diversity", {})
+            .get("category_diversity", 0) > 0.3
+        ):
             good_metrics.append("Category diversity")
-        elif self.results.get("diversity", {}).get("category_diversity", 0) < 0.2:
+        elif (
+            self.results.get("diversity", {})
+            .get("category_diversity", 0) < 0.2
+        ):
             issues.append("Low category diversity")
 
         if self.results.get("popularity_bias", {}).get("bias_score", 0) < 0.5:
             good_metrics.append("Low popularity bias")
-        elif self.results.get("popularity_bias", {}).get("bias_score", 0) > 0.8:
+        elif (
+            self.results.get("popularity_bias", {})
+            .get("bias_score", 0) > 0.8
+        ):
             issues.append("High popularity bias")
 
         if self.results.get("cold_start", {}).get("success_rate", 0) > 0.9:
@@ -997,29 +1006,30 @@ class RecommendationEvaluator:
                 print(f"    • {issue}")
 
         if not issues:
-            print("  🎉 System performing excellently across all metrics!")
+            print("System performing excellently across all metrics!")
 
         # Recommendations
-        print(f"\nRECOMMENDATIONS:")
+        print("\nRECOMMENDATIONS:")
         if (
             self.results.get("rmse", {}).get("rmse")
             and self.results["rmse"]["rmse"] > 1.5
         ):
-            print("  • Tune ALS hyperparameters (factors, regularization, iterations)")
+            print("• Tune ALS hyperparameters")
         if (
             self.results.get("map_at_10", {}).get("map")
             and self.results["map_at_10"]["map"] < 0.05
         ):
             print(
-                "  • Improve content-based features or add more user interaction data"
+                "• Improve features or add more user interaction data"
             )
         if self.results.get("coverage", {}).get("catalog_coverage", 0) < 0.1:
-            print("  • Increase recommendation diversity to cover more products")
-        if self.results.get("diversity", {}).get("category_diversity", 0) < 0.2:
-            print("  • Balance recommendations across more product categories")
+            print("• Increase recommendation diversity to cover more products")
+        if self.results.get("diversity", {}) \
+                .get("category_diversity", 0) < 0.2:
+            print("• Balance recommendations across more product categories")
 
-        print("  • Monitor performance regularly and retrain with new data")
-        print("  • Consider A/B testing different recommendation strategies")
+        print("• Monitor performance regularly and retrain with new data")
+        print("• Consider A/B testing different recommendation strategies")
 
 
 def main():
@@ -1043,13 +1053,17 @@ def main():
         results = evaluator.create_evaluation_report()
         evaluator.print_summary()
 
-        print(f"\nEvaluation completed successfully!")
+        print("\nEvaluation completed successfully!")
 
         # Print key ML metrics for quick reference
-        print(f"\nQUICK REFERENCE:")
+        print("\nQUICK REFERENCE:")
         if results and "rmse" in results and results["rmse"].get("rmse"):
             print(f"   RMSE: {results['rmse']['rmse']:.4f}")
-        if results and "map_at_10" in results and results["map_at_10"].get("map"):
+        if (
+            results
+            and "map_at_10" in results
+            and results["map_at_10"].get("map")
+        ):
             print(f"   MAP@10: {results['map_at_10']['map']:.4f}")
             print(f"   Precision@10: {results['map_at_10']['precision']:.4f}")
             print(f"   NDCG@10: {results['map_at_10']['ndcg']:.4f}")
